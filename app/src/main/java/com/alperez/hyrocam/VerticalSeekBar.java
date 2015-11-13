@@ -197,6 +197,25 @@ public class VerticalSeekBar extends View {
         return super.onTouchEvent(event);
     }
 
+    private boolean isTouchValid(float touchX, float touchY) {
+        if ((touchX >= contentAreaCenterHorizontal - mThumbSizeHalf) && (touchX < contentAreaCenterHorizontal + mThumbSizeHalf)) {
+            return true;
+        }
+
+        final float halfContentWidth = (float)contentAreaWidth / 2f;
+        float minY = mPixelYPosition - halfContentWidth;
+        if (minY < contentAreaStartY) minY = contentAreaStartY;
+        float maxY = mPixelYPosition + halfContentWidth;
+        if (maxY >= contentAreaStartY+contentAreaHeight) maxY = contentAreaStartY+contentAreaHeight;
+        if ((touchY >= minY) && (touchY < maxY)) {
+            if ((touchX >= contentAreaStartX) && (touchX < contentAreaStartX*contentAreaWidth)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void startTouchMode(final float pointerY) {
         if (targetIsBeingTouched) throw new IllegalStateException("This method can be called only when the View is not in touch mode");
 
@@ -220,37 +239,6 @@ public class VerticalSeekBar extends View {
         mProgress = (mMax - mMin) * pxProgress / contentAreaHeight;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private boolean isTouchValid(float touchX, float touchY) {
-        if ((touchX >= contentAreaCenterHorizontal - mThumbSizeHalf) && (touchX < contentAreaCenterHorizontal + mThumbSizeHalf)) {
-            return true;
-        }
-
-        final float halfContentWidth = (float)contentAreaWidth / 2f;
-        float minY = mPixelYPosition - halfContentWidth;
-        if (minY < contentAreaStartY) minY = contentAreaStartY;
-        float maxY = mPixelYPosition + halfContentWidth;
-        if (maxY >= contentAreaStartY+contentAreaHeight) maxY = contentAreaStartY+contentAreaHeight;
-        if ((touchY >= minY) && (touchY < maxY)) {
-            if ((touchX >= contentAreaStartX) && (touchX < contentAreaStartX*contentAreaWidth)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
 
     @Override
@@ -290,7 +278,6 @@ public class VerticalSeekBar extends View {
     }
 
     private void validateElementsSize() {
-        //TODO Check the validity of sizes of all elements
         if (mSelectedBarWidth > mThumbSize)
             throw new IllegalArgumentException("Selected bar width must not exceed thumb size");
         if (mNotSelectedBarWidth > mSelectedBarWidth)
