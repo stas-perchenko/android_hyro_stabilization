@@ -1,0 +1,192 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_row_height"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Yaw:"/>
+        <TextView android:id="@+id/txt_yaw"
+            style="@style/Text.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_row_height"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pitch:"/>
+        <TextView android:id="@+id/txt_pitch"
+            style="@style/Text.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_row_height"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Roll:"/>
+        <TextView android:id="@+id/txt_roll"
+            style="@style/Text.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#333333"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_row_height"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Azimuth:"/>
+        <TextView android:id="@+id/txt_azimuth"
+            style="@style/Text.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_row_height"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Inclination:"/>
+        <TextView android:id="@+id/txt_inclination"
+            style="@style/Text.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_row_height"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+
+        <TextView
+            style="@style/Text.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Scal prod (test):"/>
+        <TextView android:id="@+id/txt_test"
+            style="@style/Text.Value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.tokaracamara.android.verticalslidevar.VerticalSeekBar
+            android:id="@+id/self_altitude"
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            custom:progressDrawable="@drawable/progress_vertical"
+            custom:thumb="@drawable/seek_thumb"/>
+
+        <com.alperez.hyrocam.TargetView android:id="@+id/target_set_view"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:extDenyAreaPadding="9dp"
+            custom:angleMarkingsSize="8dp"
+            custom:gridLineWidth="1dp"
+            custom:selfMarkSizeVert="24dp"
+            custom:selfMarkSizeHor="12dp"
+            custom:targetMarkSize="7dp"
+            custom:targetToucheableRadius="18dp"
+            custom:selfToTargLineWidth="1dp"
+            custom:selfToTargLineTouchedWidth="1px"
+            custom:allowAreaColor="#F5F5F5"
+            custom:denyAreaColor="#909090"
+            custom:gridColor="#404040"
+            custom:selfMarkColor="#2040E5"
+            custom:targetMarkColor="#A02045"
+            custom:targetMarkTouchedColor="#E51010"
+            custom:targetTouchWrapperColor="#60E51010"
+            custom:selfToTargLineColor="#555555"
+            custom:selfToTargLineTouchedColor="#80555555"/>
+
+        <com.tokaracamara.android.verticalslidevar.VerticalSeekBar
+            android:id="@+id/target_altitude"
+            android:layout_width="24dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            custom:progressDrawable="@drawable/progress_vertical"
+            custom:thumb="@drawable/seek_thumb"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

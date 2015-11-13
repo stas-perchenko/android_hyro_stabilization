@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="VerticalProgressBar">
+        <attr name="progressDrawable" format="reference" />
+        <attr name="minWidth" format="dimension" />
+        <attr name="maxWidth" format="dimension" />
+        <attr name="minHeight" format="dimension" />
+        <attr name="maxHeight" format="dimension" />
+        <attr name="max" format="integer" />
+        <attr name="progress" format="integer" />
+        <attr name="secondaryProgress" format="integer" />
+    </declare-styleable>
+
+
+    <declare-styleable name="VerticalSeekBar">
+        <attr name="thumb" format="reference" />
+        <attr name="thumbOffset" format="dimension" />
+        <attr name="disabledAlpha" format="float"/>
+    </declare-styleable>
+
+    <!-- TartgetView -->
+    <declare-styleable name="TargetView">
+        <attr name="extDenyAreaPadding" format="dimension" />
+        <attr name="angleMarkingsSize" format="dimension" />
+        <attr name="gridLineWidth" format="dimension" />
+
+        <attr name="selfMarkSizeVert" format="dimension" />
+        <attr name="selfMarkSizeHor" format="dimension" />
+        <attr name="targetMarkSize" format="dimension" />
+        <attr name="targetToucheableRadius" format="dimension" />
+
+        <attr name="selfToTargLineWidth" format="dimension" />
+        <attr name="selfToTargLineTouchedWidth" format="dimension" />
+
+        <attr name="textSize" format="dimension" />
+
+
+
+        <attr name="gridColor" format="color" />
+        <attr name="selfMarkColor" format="color" />
+        <attr name="targetMarkColor" format="color" />
+        <attr name="targetMarkTouchedColor" format="color" />
+        <attr name="targetTouchWrapperColor" format="color" />
+        <attr name="allowAreaColor" format="color" />
+        <attr name="denyAreaColor" format="color" />
+
+        <attr name="selfToTargLineColor" format="color" />
+        <attr name="selfToTargLineTouchedColor" format="color" />
+
+        <attr name="textColor" format="color" />
+
+
+
+    </declare-styleable>
+</resources>
