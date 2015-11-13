@@ -11,9 +11,23 @@ public class VerticalSeekBar extends View {
 
 
     // Sizes of content items
-    private int
+    private int mThumbSize;
+    private int mThumbSizeHalf;
+    private int mNotSelectedBarWidth;
+    private int mSelectedBarWidth;
+
+    // Colors of elements
+    private int colorNotSelectedBar;
+    private int colorSelectedBar;
+    private int colorSelectedBarTouched;
+    private int colorThumb;
+    private int colorThumbTouched;
+    private int colorThumbTouchedWrapper;
 
 
+    private void validateElementsSize() {
+        //TODO Check the validity of sizes of all elements
+    }
 
     // Cached values of paddings
     private int paddingLeft;
@@ -67,6 +81,13 @@ public class VerticalSeekBar extends View {
     }
 
 
+
+    private boolean isTouchValid(float touchX, float touchY) {
+        //TODO Validating touch
+        return false;
+    }
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (contentAreaWidth == 0 || contentAreaHeight == 0) return;
@@ -75,4 +96,7 @@ public class VerticalSeekBar extends View {
         //TODO Draw here
         canvas.restore();
     }
+
+
+
 }
