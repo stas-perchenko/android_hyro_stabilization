@@ -34,7 +34,6 @@ public class VerticalSeekBar extends View {
 
 
 
-
     // Cached values of paddings
     private int paddingLeft;
     private int paddingTop;
@@ -46,6 +45,7 @@ public class VerticalSeekBar extends View {
     private int contentAreaStartY;
     private int contentAreaWidth;
     private int contentAreaHeight;
+    private float contentAreaCenterHorizontal;
 
 
     //----  Status fields  ----
@@ -136,8 +136,8 @@ public class VerticalSeekBar extends View {
         if (!wasLayout || changed) {
             targetIsBeingTouched = false;
             wasLayout = true;
-            int width = right - left;
-            int height = bottom - top;
+            final int width = right - left;
+            final int height = bottom - top;
 
             updateContentAreaSize(width, height);
             updateYPixelPositionByProgress();
@@ -145,10 +145,10 @@ public class VerticalSeekBar extends View {
     }
 
     private void updatePaddingInternal() {
-        paddingLeft = getPaddingLeft();
-        paddingTop = getPaddingTop();
-        paddingRight = getPaddingRight();
-        paddingBottom = getPaddingBottom();
+            paddingLeft = getPaddingLeft();
+            paddingTop = getPaddingTop();
+            paddingRight = getPaddingRight();
+            paddingBottom = getPaddingBottom();
     }
 
     private void updateContentAreaSize(int viewWidth, int viewHeight) {
@@ -158,7 +158,7 @@ public class VerticalSeekBar extends View {
         if (contentAreaWidth < 0) contentAreaWidth = 0;
         contentAreaHeight = viewHeight - paddingTop - paddingBottom;
         if (contentAreaHeight < 0) contentAreaHeight = 0;
-
+        contentAreaCenterHorizontal = (float)(2*contentAreaStartX + contentAreaWidth) / 2f;
     }
 
 
@@ -234,7 +234,21 @@ public class VerticalSeekBar extends View {
 
 
     private boolean isTouchValid(float touchX, float touchY) {
-        //TODO Validating touch
+        if ((touchX >= contentAreaCenterHorizontal - mThumbSizeHalf) && (touchX < contentAreaCenterHorizontal + mThumbSizeHalf)) {
+            return true;
+        }
+
+        final float halfContentWidth = (float)contentAreaWidth / 2f;
+        float minY = mPixelYPosition - halfContentWidth;
+        if (minY < contentAreaStartY) minY = contentAreaStartY;
+        float maxY = mPixelYPosition + halfContentWidth;
+        if (maxY >= contentAreaStartY+contentAreaHeight) maxY = contentAreaStartY+contentAreaHeight;
+        if ((touchY >= minY) && (touchY < maxY)) {
+            if ((touchX >= contentAreaStartX) && (touchX < contentAreaStartX*contentAreaWidth)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
