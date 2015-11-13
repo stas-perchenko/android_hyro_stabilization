@@ -1,6 +1,12 @@
 package com.alperez.hyrocam;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.os.Build;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
 import android.view.View;
 
 /**
@@ -26,9 +32,6 @@ public class VerticalSeekBar extends View {
 
 
 
-    private void validateElementsSize() {
-        //TODO Check the validity of sizes of all elements
-    }
 
     // Cached values of paddings
     private int paddingLeft;
@@ -44,11 +47,54 @@ public class VerticalSeekBar extends View {
 
 
 
+    public VerticalSeekBar(Context context) {
+        super(context);
+        init(context);
+    }
 
-    private void init() {
+    public VerticalSeekBar(Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public VerticalSeekBar(Context context, @Nullable AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        extractArguments(attrs, defStyle);
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public VerticalSeekBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        extractArguments(attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void extractArguments(@Nullable AttributeSet attrs, int defStyleAttr) {
+        if (attrs != null) {
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.VerticalSeekBar, defStyleAttr, 0);
+            try {
+                mThumbSize = a.getDimensionPixelSize(R.styleable.VerticalSeekBar_thumbSize, mThumbSize);
+                mThumbSizeHalf = (float)mThumbSize / 2f;
+                mNotSelectedBarWidth = a.getDimensionPixelSize(R.styleable.VerticalSeekBar_notSelectedBarWidth, mNotSelectedBarWidth);
+                mSelectedBarWidth = a.getDimensionPixelSize(R.styleable.VerticalSeekBar_selectedBarWidth, mSelectedBarWidth);
+
+                colorNotSelectedBar = a.getColor(R.styleable.VerticalSeekBar_notSelectedBarColor, colorNotSelectedBar);
+                colorSelectedBar = a.getColor(R.styleable.VerticalSeekBar_selectedBarColor, colorSelectedBar);
+                colorSelectedBarTouched = a.getColor(R.styleable.VerticalSeekBar_selectedBarColorTouched, colorSelectedBarTouched);
+                colorThumb = a.getColor(R.styleable.VerticalSeekBar_thumbColor, colorThumb);
+                colorThumbTouched = a.getColor(R.styleable.VerticalSeekBar_thumbTouchedColor, colorThumbTouched);
+                colorThumbTouchedWrapper = a.getColor(R.styleable.VerticalSeekBar_thumbTouchedWrapperColor, colorThumbTouchedWrapper);
+            } finally {
+                a.recycle();
+            }
+        }
+    }
+
+
+
+    private void init(Context context) {
 
         validateElementsSize();
-        //TODO
         updatePaddingInternal();
     }
 
@@ -124,6 +170,14 @@ public class VerticalSeekBar extends View {
         this.colorThumb = colorThumb;
         this.colorThumbTouched = colorThumbTouched;
         this.colorThumbTouchedWrapper = colorThumbTouchedWrapper;
+    }
+
+    private void validateElementsSize() {
+        //TODO Check the validity of sizes of all elements
+        if (mSelectedBarWidth > mThumbSize)
+            throw new IllegalArgumentException("Selected bar width must not exceed thumb size");
+        if (mNotSelectedBarWidth > mSelectedBarWidth)
+            throw new IllegalArgumentException("Not selected bar width must not exceed selected bar width");
     }
 
 }

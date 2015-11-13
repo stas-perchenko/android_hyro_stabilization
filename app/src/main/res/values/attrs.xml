@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="VerticalProgressBar">
-        <attr name="progressDrawable" format="reference" />
-        <attr name="minWidth" format="dimension" />
-        <attr name="maxWidth" format="dimension" />
-        <attr name="minHeight" format="dimension" />
-        <attr name="maxHeight" format="dimension" />
-        <attr name="max" format="integer" />
-        <attr name="progress" format="integer" />
-        <attr name="secondaryProgress" format="integer" />
-    </declare-styleable>
 
 
     <declare-styleable name="VerticalSeekBar">
-        <attr name="thumb" format="reference" />
-        <attr name="thumbOffset" format="dimension" />
-        <attr name="disabledAlpha" format="float"/>
+        <attr name="thumbSize" format="dimension" />
+        <attr name="notSelectedBarWidth" format="dimension" />
+        <attr name="selectedBarWidth" format="dimension" />
+        <attr name="notSelectedBarColor" format="color" />
+        <attr name="selectedBarColor" format="color" />
+        <attr name="selectedBarColorTouched" format="color" />
+        <attr name="thumbColor" format="color" />
+        <attr name="thumbTouchedColor" format="color" />
+        <attr name="thumbTouchedWrapperColor" format="color" />
     </declare-styleable>
 
     <!-- TartgetView -->
