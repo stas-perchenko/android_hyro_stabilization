@@ -11,10 +11,10 @@ public class VerticalSeekBar extends View {
 
 
     // Sizes of content items
-    private int mThumbSize;
-    private int mThumbSizeHalf;
-    private int mNotSelectedBarWidth;
-    private int mSelectedBarWidth;
+    private int mThumbSize = 25;
+    private float mThumbSizeHalf = 12.5f;
+    private int mNotSelectedBarWidth = 4;
+    private int mSelectedBarWidth = 10;
 
     // Colors of elements
     private int colorNotSelectedBar;
@@ -23,6 +23,7 @@ public class VerticalSeekBar extends View {
     private int colorThumb;
     private int colorThumbTouched;
     private int colorThumbTouchedWrapper;
+
 
 
     private void validateElementsSize() {
@@ -46,6 +47,7 @@ public class VerticalSeekBar extends View {
 
     private void init() {
 
+        validateElementsSize();
         //TODO
         updatePaddingInternal();
     }
@@ -98,5 +100,30 @@ public class VerticalSeekBar extends View {
     }
 
 
+
+
+
+    /**********************************************************************************************/
+    /**********************************  Setters for parameters  **********************************/
+    /**********************************************************************************************/
+    private void setElementsSize(int thumbSize, int notSelectedBarWidth, int selectedBarWidth) {
+        mThumbSize = thumbSize;
+        mThumbSizeHalf = (float) thumbSize / 2f;
+        mNotSelectedBarWidth = notSelectedBarWidth;
+        mSelectedBarWidth = selectedBarWidth;
+        validateElementsSize();
+    }
+
+    private void setBarColors(int colorNotSelected, int colorSelected, int colorSelectedTouched) {
+        this.colorNotSelectedBar = colorNotSelected;
+        this.colorSelectedBar = colorSelected;
+        this.colorSelectedBarTouched = colorSelectedTouched;
+    }
+
+    private void setThumbColors(int colorThumb, int colorThumbTouched, int colorThumbTouchedWrapper) {
+        this.colorThumb = colorThumb;
+        this.colorThumbTouched = colorThumbTouched;
+        this.colorThumbTouchedWrapper = colorThumbTouchedWrapper;
+    }
 
 }
