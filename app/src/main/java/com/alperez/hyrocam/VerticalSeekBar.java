@@ -6,7 +6,9 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -46,6 +48,20 @@ public class VerticalSeekBar extends View {
     private int contentAreaHeight;
 
 
+    //----  Status fields  ----
+    private boolean targetIsBeingTouched;
+
+    private float mPixelYPosition;
+
+
+    //----  Real progress values  ----
+    private float mMin = 0;
+    private float mMax = 100f;
+    private float mProgress = 50f;
+
+
+
+    private boolean wasLayout;
 
     public VerticalSeekBar(Context context) {
         super(context);
@@ -98,17 +114,34 @@ public class VerticalSeekBar extends View {
         updatePaddingInternal();
     }
 
+    /*********************************  Layout-related  *******************************************/
 
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
         updatePaddingInternal();
-        updateContentAreaSize(getWidth(), getHeight());
+        if (wasLayout) {
+            updateContentAreaSize(getWidth(), getHeight());
+        }
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        updateContentAreaSize(w, h);
+    public void requestLayout() {
+        super.requestLayout();
+        wasLayout = false;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (!wasLayout || changed) {
+            targetIsBeingTouched = false;
+            wasLayout = true;
+            int width = right - left;
+            int height = bottom - top;
+
+            updateContentAreaSize(width, height);
+            updateYPixelPositionByProgress();
+        }
     }
 
     private void updatePaddingInternal() {
@@ -127,6 +160,76 @@ public class VerticalSeekBar extends View {
         if (contentAreaHeight < 0) contentAreaHeight = 0;
 
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if (wasLayout) {
+            final int action = MotionEventCompat.getActionMasked(event);
+            final float x = event.getX();
+            final float y = event.getY();
+            switch(action) {
+                case MotionEvent.ACTION_DOWN:
+                    if (!targetIsBeingTouched && isTouchValid(x, y)) {
+                        startTouchMode(y);
+                        super.invalidate();
+                        return true;
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (targetIsBeingTouched) {
+                        updateThumbPositionInTouchMode(y);
+                        super.invalidate();
+                        return true;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    if (targetIsBeingTouched) {
+                        targetIsBeingTouched = false;
+                        super.invalidate();
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private void startTouchMode(final float pointerY) {
+        if (targetIsBeingTouched) throw new IllegalStateException("This method can be called only when the View is not in touch mode");
+
+        targetIsBeingTouched = true;
+        updateThumbPositionInTouchMode(pointerY);
+    }
+
+    private void updateThumbPositionInTouchMode(final float pointerY) {
+        if (!targetIsBeingTouched)
+            throw new IllegalStateException("This method can be called only when the View is in touch mode");
+
+        if (pointerY < contentAreaStartY) {
+            mPixelYPosition = contentAreaStartY;
+        }  else if (pointerY > contentAreaStartY+contentAreaHeight) {
+            mPixelYPosition = contentAreaStartY+contentAreaHeight;
+        } else {
+            mPixelYPosition = pointerY;
+        }
+
+        final float pxProgress = contentAreaStartY+contentAreaHeight - mPixelYPosition;
+        mProgress = (mMax - mMin) * pxProgress / contentAreaHeight;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -180,4 +283,52 @@ public class VerticalSeekBar extends View {
             throw new IllegalArgumentException("Not selected bar width must not exceed selected bar width");
     }
 
+
+    public void setProgress(float progress) {
+        if (progress > mMax) {
+            mProgress = mMax;
+        } else if (progress < mMin) {
+            mProgress = mMin;
+        } else {
+            mProgress = progress;
+        }
+        invalidate();
+    }
+
+    public float getProgress() {
+        return mProgress;
+    }
+
+    public void setRange(float min, float max) {
+        if (min >= max) throw new IllegalArgumentException("Min value must be less then Max value");
+        mMin = min;
+        mMax = max;
+        if (mProgress < mMin) {
+            mProgress = mMin;
+        } else if (mProgress > mMax) {
+            mProgress = mMax;
+        }
+        invalidate();
+    }
+
+    public float getMin() {
+        return mMin;
+    }
+
+    public float getMax() {
+        return mMax;
+    }
+
+
+    @Override
+    public void invalidate() {
+        updateYPixelPositionByProgress();
+        super.invalidate();
+    }
+
+    private void updateYPixelPositionByProgress() {
+        if (wasLayout) {
+            mPixelYPosition = contentAreaStartY + contentAreaHeight * (mMax - mProgress) / (mMax - mMin);
+        }
+    }
 }
