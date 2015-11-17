@@ -14,6 +14,13 @@
         <attr name="thumbColor" format="color" />
         <attr name="thumbTouchedColor" format="color" />
         <attr name="thumbTouchedWrapperColor" format="color" />
+
+        <!-- Attributes for drawing some invisible areas for testing -->
+        <attr name="testDrawContentArea" format="boolean"/>
+        <attr name="testContentAreaColor" format="color" />
+        <attr name="testShowTouchableArea" format="boolean"/>
+        <attr name="testTouchableAreaColor" format="color"/>
+
     </declare-styleable>
 
     <!-- TartgetView -->

@@ -147,10 +147,11 @@
         android:orientation="horizontal">
 
         <com.alperez.hyrocam.VerticalSeekBar
-            android:layout_width="32dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:padding="6dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
             custom:notSelectedBarWidth="1dp"
             custom:selectedBarWidth="5dp"
             custom:thumbSize="9dp"
@@ -159,7 +160,9 @@
             custom:selectedBarColorTouched="#F5E000"
             custom:thumbColor="#0010E0"
             custom:thumbTouchedColor="#1045FF"
-            custom:thumbTouchedWrapperColor="#801045FF"/>
+            custom:thumbTouchedWrapperColor="#801045FF"
+            custom:testDrawContentArea="true"
+            custom:testContentAreaColor="#152050FF"/>
 
         <com.alperez.hyrocam.TargetView android:id="@+id/target_set_view"
             android:layout_width="0dp"

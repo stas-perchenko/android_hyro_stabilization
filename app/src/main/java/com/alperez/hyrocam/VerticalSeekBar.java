@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
@@ -34,7 +35,11 @@ public class VerticalSeekBar extends View {
     private int colorThumbTouched;
     private int colorThumbTouchedWrapper;
 
-
+    // Arguments for test drawings
+    private boolean mTestShowContentArea;
+    private int mTestContentAreaColor;
+    private boolean mTestShowToucableArea;
+    private int mTestToucableAreaColor;
 
     // Cached values of paddings
     private int paddingLeft;
@@ -111,13 +116,20 @@ public class VerticalSeekBar extends View {
                 colorThumb = a.getColor(R.styleable.VerticalSeekBar_thumbColor, colorThumb);
                 colorThumbTouched = a.getColor(R.styleable.VerticalSeekBar_thumbTouchedColor, colorThumbTouched);
                 colorThumbTouchedWrapper = a.getColor(R.styleable.VerticalSeekBar_thumbTouchedWrapperColor, colorThumbTouchedWrapper);
+
+                mTestShowContentArea = a.getBoolean(R.styleable.VerticalSeekBar_testDrawContentArea, false);
+                if (mTestShowContentArea) {
+                    mTestContentAreaColor = a.getColor(R.styleable.VerticalSeekBar_testContentAreaColor, 0);
+                }
+                mTestShowToucableArea = a.getBoolean(R.styleable.VerticalSeekBar_testShowTouchableArea, false);
+                if (mTestShowToucableArea) {
+                    mTestToucableAreaColor = a.getColor(R.styleable.VerticalSeekBar_testTouchableAreaColor, 0);
+                }
             } finally {
                 a.recycle();
             }
         }
     }
-
-
 
     private void init(Context context) {
         mPaintStroke = new Paint();
@@ -132,10 +144,16 @@ public class VerticalSeekBar extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMinimumWidth(mThumbSize + paddingLeft + paddingRight);
-        setMinimumHeight(5*mThumbSize + paddingTop + paddingBottom);
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        final int minW = mThumbSize + paddingLeft + paddingRight;
+        final int minH = 5*mThumbSize + paddingTop + paddingBottom;
+        setMinimumWidth(minW);
+        setMinimumHeight(minH);
+
+        //setMeasuredDimension(getActualViewSize(minW, widthMeasureSpec), getActualViewSize(minH, heightMeasureSpec));
+        super.setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
     }
+
+    
 
     /*********************************  Layout-related  *******************************************/
 
@@ -289,13 +307,25 @@ public class VerticalSeekBar extends View {
     }
 
 
+    private Rect contentAreaRect;
 
     @Override
     protected void onDraw(Canvas canvas) {
         if (contentAreaWidth == 0 || contentAreaHeight == 0) return;
         if (thumbPositionYBot - thumbPositionYTop <= 0) return;
         canvas.save();
-        canvas.clipRect(contentAreaStartX, contentAreaStartY, contentAreaStartX+contentAreaWidth, contentAreaStartY+contentAreaHeight);
+        if (contentAreaRect == null) {
+            contentAreaRect = new Rect(contentAreaStartX, contentAreaStartY, contentAreaStartX+contentAreaWidth, contentAreaStartY+contentAreaHeight);
+        } else {
+            contentAreaRect.set(contentAreaStartX, contentAreaStartY, contentAreaStartX+contentAreaWidth, contentAreaStartY+contentAreaHeight);
+        }
+        canvas.clipRect(contentAreaRect);
+
+        //--- Test drawing of content area ---
+        if (mTestShowContentArea) {
+            mPaintFill.setColor(mTestContentAreaColor);
+            canvas.drawColor(mTestContentAreaColor);
+        }
 
         //--- Draw non-selected bar ---
         mPaintStroke.setColor(colorNotSelectedBar);
