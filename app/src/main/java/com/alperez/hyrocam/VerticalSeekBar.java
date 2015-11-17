@@ -255,7 +255,7 @@ public class VerticalSeekBar extends View {
         if (pointerY < thumbPositionYTop) {
             mPixelYPosition = thumbPositionYTop;
         }  else if (pointerY > thumbPositionYBot) {
-            mPixelYPosition = thumbPositionYTop;
+            mPixelYPosition = thumbPositionYBot;
         } else {
             mPixelYPosition = pointerY;
         }
