@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -279,7 +280,9 @@ public class VerticalSeekBar extends View {
 
     private boolean isTouchValid(float touchX, float touchY) {
         if ((touchX >= touchAreaStartX) && (touchX < touchAreaEndX)) {
-            return true;
+            if ((touchY >= contentAreaStartY) && (touchY < contentAreaStartY + contentAreaHeight)) {
+                return true;
+            }
         }
 
         final float halfContentWidth = (float)contentAreaWidth / 2f;
@@ -321,6 +324,7 @@ public class VerticalSeekBar extends View {
 
 
     private Rect contentAreaRect;
+    private Path drawingAreaPath;
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -339,6 +343,8 @@ public class VerticalSeekBar extends View {
             mPaintFill.setColor(mTestContentAreaColor);
             canvas.drawColor(mTestContentAreaColor);
         }
+
+        
 
         //--- Draw non-selected bar ---
         mPaintStroke.setColor(colorNotSelectedBar);
@@ -362,9 +368,6 @@ public class VerticalSeekBar extends View {
 
         canvas.restore();
     }
-
-
-
 
 
     /**********************************************************************************************/
