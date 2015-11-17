@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.tokaracamara.android.verticalslidevar.VerticalSeekBar;
-
 public class MainActivity extends AppCompatActivity implements SensorsController.OnAnglesListener {
 
     private static final int MAXIMUM_SELF_ALT = 1000;
@@ -25,8 +23,6 @@ public class MainActivity extends AppCompatActivity implements SensorsController
     private TextView vTxtTestScalProduct;
 
     private TargetView vTarget;
-    private VerticalSeekBar vSelfAltController;
-    private VerticalSeekBar vTargetAltController;
 
     SensorsController mController;
 
@@ -59,41 +55,7 @@ public class MainActivity extends AppCompatActivity implements SensorsController
                 mController.setTargetLocation(targ);
             }
         });
-        vSelfAltController = (VerticalSeekBar) findViewById(R.id.self_altitude);
-        vSelfAltController.setMax(MAXIMUM_SELF_ALT);
-        vSelfAltController.setProgress(INITIAL_SELF_ALT);
-        vSelfAltController.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(VerticalSeekBar seekBar, int progress, boolean fromUser) {
-                vTarget.setRealLifeSelfAltitude(progress);
-                if (progress < vTargetAltController.getMax()) {
-                    vTargetAltController.setMax(progress);
-                } else if (progress < vTargetAltController.getMax()) {
-                    vTargetAltController.setMax(progress);
-                }
-            }
 
-            @Override
-            public void onStartTrackingTouch(VerticalSeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(VerticalSeekBar seekBar) {}
-        });
-        vTargetAltController = (VerticalSeekBar) findViewById(R.id.target_altitude);
-        vTargetAltController.setMax(INITIAL_SELF_ALT);
-        vTargetAltController.setProgress(INITIAL_TARGET_ALT);
-        vTargetAltController.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(VerticalSeekBar seekBar, int progress, boolean fromUser) {
-                vTarget.setRealLifeTargetAltitude(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(VerticalSeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(VerticalSeekBar seekBar) {}
-        });
 
         mController = new SensorsController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         mController.setSelfLocation(new float[]{0, 0, INITIAL_SELF_ALT});

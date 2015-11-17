@@ -146,13 +146,20 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.tokaracamara.android.verticalslidevar.VerticalSeekBar
-            android:id="@+id/self_altitude"
-            android:layout_width="24dp"
+        <com.alperez.hyrocam.VerticalSeekBar
+            android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            custom:progressDrawable="@drawable/progress_vertical"
-            custom:thumb="@drawable/seek_thumb"/>
+            android:padding="6dp"
+            custom:notSelectedBarWidth="1dp"
+            custom:selectedBarWidth="5dp"
+            custom:thumbSize="9dp"
+            custom:notSelectedBarColor="#454545"
+            custom:selectedBarColor="#E0A000"
+            custom:selectedBarColorTouched="#F5E000"
+            custom:thumbColor="#0010E0"
+            custom:thumbTouchedColor="#1045FF"
+            custom:thumbTouchedWrapperColor="#801045FF"/>
 
         <com.alperez.hyrocam.TargetView android:id="@+id/target_set_view"
             android:layout_width="0dp"
@@ -177,13 +184,6 @@
             custom:selfToTargLineColor="#555555"
             custom:selfToTargLineTouchedColor="#80555555"/>
 
-        <com.tokaracamara.android.verticalslidevar.VerticalSeekBar
-            android:id="@+id/target_altitude"
-            android:layout_width="24dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            custom:progressDrawable="@drawable/progress_vertical"
-            custom:thumb="@drawable/seek_thumb"/>
 
     </LinearLayout>
 

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
@@ -46,6 +47,8 @@ public class VerticalSeekBar extends View {
     private int contentAreaWidth;
     private int contentAreaHeight;
     private float contentAreaCenterHorizontal;
+    private float thumbPositionYTop;
+    private float thumbPositionYBot;
 
 
     //----  Status fields  ----
@@ -63,6 +66,9 @@ public class VerticalSeekBar extends View {
 
     private boolean wasLayout;
 
+    private Paint mPaintStroke;
+    private Paint mPaintFill;
+
     public VerticalSeekBar(Context context) {
         super(context);
         init(context);
@@ -75,6 +81,7 @@ public class VerticalSeekBar extends View {
     public VerticalSeekBar(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         extractArguments(attrs, defStyle);
+        init(context);
     }
 
 
@@ -109,12 +116,27 @@ public class VerticalSeekBar extends View {
 
 
     private void init(Context context) {
-
+        mPaintStroke = new Paint();
+        mPaintStroke.setAntiAlias(true);
+        mPaintStroke.setStyle(Paint.Style.STROKE);
+        mPaintFill = new Paint();
+        mPaintFill.setAntiAlias(true);
+        mPaintFill.setStyle(Paint.Style.FILL);
         validateElementsSize();
         updatePaddingInternal();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMinimumWidth(mThumbSize + paddingLeft + paddingRight);
+        setMinimumHeight(5*mThumbSize + paddingTop + paddingBottom);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     /*********************************  Layout-related  *******************************************/
+
+
+
 
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
@@ -159,6 +181,9 @@ public class VerticalSeekBar extends View {
         contentAreaHeight = viewHeight - paddingTop - paddingBottom;
         if (contentAreaHeight < 0) contentAreaHeight = 0;
         contentAreaCenterHorizontal = (float)(2*contentAreaStartX + contentAreaWidth) / 2f;
+
+        thumbPositionYTop = contentAreaStartY + mThumbSizeHalf;
+        thumbPositionYBot = contentAreaStartY + contentAreaHeight - mThumbSizeHalf;
     }
 
 
@@ -227,16 +252,16 @@ public class VerticalSeekBar extends View {
         if (!targetIsBeingTouched)
             throw new IllegalStateException("This method can be called only when the View is in touch mode");
 
-        if (pointerY < contentAreaStartY) {
-            mPixelYPosition = contentAreaStartY;
-        }  else if (pointerY > contentAreaStartY+contentAreaHeight) {
-            mPixelYPosition = contentAreaStartY+contentAreaHeight;
+        if (pointerY < thumbPositionYTop) {
+            mPixelYPosition = thumbPositionYTop;
+        }  else if (pointerY > thumbPositionYBot) {
+            mPixelYPosition = thumbPositionYTop;
         } else {
             mPixelYPosition = pointerY;
         }
 
-        final float pxProgress = contentAreaStartY+contentAreaHeight - mPixelYPosition;
-        mProgress = (mMax - mMin) * pxProgress / contentAreaHeight;
+        final float pxProgress = thumbPositionYBot - mPixelYPosition;
+        mProgress = (mMax - mMin) * pxProgress / (thumbPositionYBot - thumbPositionYTop);
     }
 
 
@@ -244,9 +269,30 @@ public class VerticalSeekBar extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (contentAreaWidth == 0 || contentAreaHeight == 0) return;
+        if (thumbPositionYBot - thumbPositionYTop <= 0) return;
         canvas.save();
         canvas.clipRect(contentAreaStartX, contentAreaStartY, contentAreaStartX+contentAreaWidth, contentAreaStartY+contentAreaHeight);
-        //TODO Draw here
+
+        //--- Draw non-selected bar ---
+        mPaintStroke.setColor(colorNotSelectedBar);
+        mPaintStroke.setStrokeWidth(mNotSelectedBarWidth);
+        canvas.drawLine(contentAreaCenterHorizontal, thumbPositionYTop, contentAreaCenterHorizontal, thumbPositionYBot, mPaintStroke);
+
+        //--- Draw selected bar ---
+        mPaintStroke.setColor(targetIsBeingTouched ? colorSelectedBarTouched : colorSelectedBar);
+        mPaintStroke.setStrokeWidth(mSelectedBarWidth);
+        canvas.drawLine(contentAreaCenterHorizontal, mPixelYPosition, contentAreaCenterHorizontal, thumbPositionYBot, mPaintStroke);
+
+        //--- Draw thumb wrapper ---
+        if (targetIsBeingTouched) {
+            mPaintFill.setColor(colorThumbTouchedWrapper);
+            canvas.drawCircle(contentAreaCenterHorizontal, mPixelYPosition, contentAreaWidth/2, mPaintFill);
+        }
+
+        //--- Draw thumb ---
+        mPaintFill.setColor(targetIsBeingTouched ? colorThumbTouched : colorThumb);
+        canvas.drawCircle(contentAreaCenterHorizontal, mPixelYPosition, mThumbSizeHalf, mPaintFill);
+
         canvas.restore();
     }
 
@@ -329,7 +375,7 @@ public class VerticalSeekBar extends View {
 
     private void updateYPixelPositionByProgress() {
         if (wasLayout) {
-            mPixelYPosition = contentAreaStartY + contentAreaHeight * (mMax - mProgress) / (mMax - mMin);
+            mPixelYPosition = thumbPositionYBot - (thumbPositionYBot - thumbPositionYTop) * (mProgress) / (mMax - mMin);
         }
     }
 }

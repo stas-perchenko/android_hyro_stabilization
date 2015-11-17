@@ -169,7 +169,6 @@ public class TargetView extends View {
         mPositionChecgeListener = l;
     }
 
-    set
 
 
     public void setRealLifeMaxTargetRadius(float radius) {
