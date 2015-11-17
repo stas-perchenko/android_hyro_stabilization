@@ -7,6 +7,7 @@
         <attr name="thumbSize" format="dimension" />
         <attr name="notSelectedBarWidth" format="dimension" />
         <attr name="selectedBarWidth" format="dimension" />
+        <attr name="prefTouchAreaWidth" format="dimension"/>
         <attr name="notSelectedBarColor" format="color" />
         <attr name="selectedBarColor" format="color" />
         <attr name="selectedBarColorTouched" format="color" />

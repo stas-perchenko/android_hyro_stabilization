@@ -24,6 +24,7 @@ public class VerticalSeekBar extends View {
     private float mThumbSizeHalf = 12.5f;
     private int mNotSelectedBarWidth = 4;
     private int mSelectedBarWidth = 10;
+    private int mPreferredTouchableAreaWidth;
 
     // Colors of elements
     private int colorNotSelectedBar;
@@ -49,6 +50,8 @@ public class VerticalSeekBar extends View {
     private float contentAreaCenterHorizontal;
     private float thumbPositionYTop;
     private float thumbPositionYBot;
+    private float touchAreaStartX;
+    private float touchAreaEndX;
 
 
     //----  Status fields  ----
@@ -100,6 +103,7 @@ public class VerticalSeekBar extends View {
                 mThumbSizeHalf = (float)mThumbSize / 2f;
                 mNotSelectedBarWidth = a.getDimensionPixelSize(R.styleable.VerticalSeekBar_notSelectedBarWidth, mNotSelectedBarWidth);
                 mSelectedBarWidth = a.getDimensionPixelSize(R.styleable.VerticalSeekBar_selectedBarWidth, mSelectedBarWidth);
+                mPreferredTouchableAreaWidth = a.getDimensionPixelSize(R.styleable.VerticalSeekBar_prefTouchAreaWidth, 0);
 
                 colorNotSelectedBar = a.getColor(R.styleable.VerticalSeekBar_notSelectedBarColor, colorNotSelectedBar);
                 colorSelectedBar = a.getColor(R.styleable.VerticalSeekBar_selectedBarColor, colorSelectedBar);
@@ -144,6 +148,7 @@ public class VerticalSeekBar extends View {
         updatePaddingInternal();
         if (wasLayout) {
             updateContentAreaSize(getWidth(), getHeight());
+            updateTouchableAreaYBounds();
         }
     }
 
@@ -162,6 +167,7 @@ public class VerticalSeekBar extends View {
             final int height = bottom - top;
 
             updateContentAreaSize(width, height);
+            updateTouchableAreaYBounds();
             updateYPixelPositionByProgress();
         }
     }
@@ -184,6 +190,24 @@ public class VerticalSeekBar extends View {
 
         thumbPositionYTop = contentAreaStartY + mThumbSizeHalf;
         thumbPositionYBot = contentAreaStartY + contentAreaHeight - mThumbSizeHalf;
+    }
+
+    private void updateTouchableAreaYBounds() {
+        if (mPreferredTouchableAreaWidth < mThumbSize) {
+            touchAreaStartX = contentAreaCenterHorizontal - mThumbSizeHalf;
+            touchAreaEndX = touchAreaStartX + mThumbSize;
+        } else {
+            touchAreaStartX = contentAreaCenterHorizontal - (float)mPreferredTouchableAreaWidth / 2f;
+            touchAreaEndX = touchAreaStartX + mPreferredTouchableAreaWidth;
+
+            // Check that touchable area not exceeds paddings
+            if (touchAreaStartX < contentAreaStartX) {
+                touchAreaStartX = contentAreaStartX;
+            }
+            if (touchAreaEndX > (contentAreaStartX + contentAreaWidth)) {
+                touchAreaStartX = contentAreaStartX + contentAreaWidth;
+            }
+        }
     }
 
 
@@ -223,7 +247,7 @@ public class VerticalSeekBar extends View {
     }
 
     private boolean isTouchValid(float touchX, float touchY) {
-        if ((touchX >= contentAreaCenterHorizontal - mThumbSizeHalf) && (touchX < contentAreaCenterHorizontal + mThumbSizeHalf)) {
+        if ((touchX >= touchAreaStartX) && (touchX < touchAreaEndX)) {
             return true;
         }
 
@@ -303,7 +327,7 @@ public class VerticalSeekBar extends View {
     /**********************************************************************************************/
     /**********************************  Setters for parameters  **********************************/
     /**********************************************************************************************/
-    private void setElementsSize(int thumbSize, int notSelectedBarWidth, int selectedBarWidth) {
+    public void setElementsSize(int thumbSize, int notSelectedBarWidth, int selectedBarWidth) {
         mThumbSize = thumbSize;
         mThumbSizeHalf = (float) thumbSize / 2f;
         mNotSelectedBarWidth = notSelectedBarWidth;
@@ -311,16 +335,21 @@ public class VerticalSeekBar extends View {
         validateElementsSize();
     }
 
-    private void setBarColors(int colorNotSelected, int colorSelected, int colorSelectedTouched) {
+    public void setBarColors(int colorNotSelected, int colorSelected, int colorSelectedTouched) {
         this.colorNotSelectedBar = colorNotSelected;
         this.colorSelectedBar = colorSelected;
         this.colorSelectedBarTouched = colorSelectedTouched;
     }
 
-    private void setThumbColors(int colorThumb, int colorThumbTouched, int colorThumbTouchedWrapper) {
+    public void setThumbColors(int colorThumb, int colorThumbTouched, int colorThumbTouchedWrapper) {
         this.colorThumb = colorThumb;
         this.colorThumbTouched = colorThumbTouched;
         this.colorThumbTouchedWrapper = colorThumbTouchedWrapper;
+    }
+
+    public void setPreferredTouchableAreaWidth(int width) {
+        mPreferredTouchableAreaWidth = width;
+        updateTouchableAreaYBounds();
     }
 
     private void validateElementsSize() {
