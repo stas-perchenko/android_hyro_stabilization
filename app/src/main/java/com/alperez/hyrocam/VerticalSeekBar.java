@@ -149,11 +149,24 @@ public class VerticalSeekBar extends View {
         setMinimumWidth(minW);
         setMinimumHeight(minH);
 
-        //setMeasuredDimension(getActualViewSize(minW, widthMeasureSpec), getActualViewSize(minH, heightMeasureSpec));
-        super.setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(getActualViewSize(minW, widthMeasureSpec), getActualViewSize(minH, heightMeasureSpec));
+        //super.setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
     }
 
-    
+    public static int getActualViewSize(int proposedMinSize, int measureSpec) {
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+        switch (specMode) {
+            case MeasureSpec.UNSPECIFIED:
+                return proposedMinSize;
+            case MeasureSpec.EXACTLY:
+                return specSize;
+            case MeasureSpec.AT_MOST:
+                return (proposedMinSize <= specSize) ? proposedMinSize : specSize;
+            default:
+                return proposedMinSize;
+        }
+    }
 
     /*********************************  Layout-related  *******************************************/
 
