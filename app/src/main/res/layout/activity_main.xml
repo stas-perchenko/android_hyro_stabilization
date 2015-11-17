@@ -155,6 +155,7 @@
             custom:notSelectedBarWidth="1dp"
             custom:selectedBarWidth="5dp"
             custom:thumbSize="9dp"
+            custom:prefTouchAreaWidth="14dp"
             custom:notSelectedBarColor="#454545"
             custom:selectedBarColor="#E0A000"
             custom:selectedBarColorTouched="#F5E000"
@@ -162,7 +163,9 @@
             custom:thumbTouchedColor="#1045FF"
             custom:thumbTouchedWrapperColor="#801045FF"
             custom:testDrawContentArea="true"
-            custom:testContentAreaColor="#152050FF"/>
+            custom:testContentAreaColor="#152050FF"
+            custom:testShowTouchableArea="true"
+            custom:testTouchableAreaColor="#333333"/>
 
         <com.alperez.hyrocam.TargetView android:id="@+id/target_set_view"
             android:layout_width="0dp"

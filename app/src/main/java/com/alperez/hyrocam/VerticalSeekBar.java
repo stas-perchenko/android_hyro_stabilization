@@ -237,7 +237,7 @@ public class VerticalSeekBar extends View {
                 touchAreaStartX = contentAreaStartX;
             }
             if (touchAreaEndX > (contentAreaStartX + contentAreaWidth)) {
-                touchAreaStartX = contentAreaStartX + contentAreaWidth;
+                touchAreaEndX = contentAreaStartX + contentAreaWidth;
             }
         }
     }
@@ -326,6 +326,7 @@ public class VerticalSeekBar extends View {
     private Rect contentAreaRect;
     private Path drawingAreaPath;
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (contentAreaWidth == 0 || contentAreaHeight == 0) return;
@@ -344,7 +345,59 @@ public class VerticalSeekBar extends View {
             canvas.drawColor(mTestContentAreaColor);
         }
 
-        
+        //--- Test drawing of the touchable area's borders ---
+        if (mTestShowToucableArea) {
+
+            if (drawingAreaPath == null) {
+                drawingAreaPath = new Path();
+            } else {
+                drawingAreaPath.reset();
+            }
+
+            final float halfContentWidth = (float)contentAreaWidth / 2f;
+            int minY = Math.round(mPixelYPosition - halfContentWidth);
+            int maxY = Math.round(mPixelYPosition + halfContentWidth);
+
+            if (minY <= contentAreaStartY) {
+                drawingAreaPath.moveTo(contentAreaStartX, contentAreaStartY);
+                drawingAreaPath.lineTo(contentAreaStartX+contentAreaWidth-1, contentAreaStartY);
+                drawingAreaPath.lineTo(contentAreaStartX+contentAreaWidth-1, maxY-1);
+                drawingAreaPath.lineTo(touchAreaEndX-1, maxY-1);
+                drawingAreaPath.lineTo(touchAreaEndX-1, contentAreaStartY+contentAreaHeight-1);
+                drawingAreaPath.lineTo(touchAreaStartX, contentAreaStartY+contentAreaHeight-1);
+                drawingAreaPath.lineTo(touchAreaStartX, maxY-1);
+                drawingAreaPath.lineTo(contentAreaStartX, maxY-1);
+            } else if (maxY >= contentAreaStartY+contentAreaHeight) {
+                drawingAreaPath.moveTo(touchAreaStartX, contentAreaStartY);
+                drawingAreaPath.lineTo(touchAreaEndX-1, contentAreaStartY);
+                drawingAreaPath.lineTo(touchAreaEndX-1, minY);
+                drawingAreaPath.lineTo(contentAreaStartX+contentAreaWidth-1, minY);
+                drawingAreaPath.lineTo(contentAreaStartX+contentAreaWidth-1, contentAreaStartY+contentAreaHeight-1);
+                drawingAreaPath.lineTo(contentAreaStartX, contentAreaStartY+contentAreaHeight-1);
+                drawingAreaPath.lineTo(contentAreaStartX, minY);
+                drawingAreaPath.lineTo(touchAreaStartX, minY);
+            } else {
+                drawingAreaPath.moveTo(touchAreaStartX, contentAreaStartY);
+                drawingAreaPath.lineTo(touchAreaEndX-1, contentAreaStartY);
+                drawingAreaPath.lineTo(touchAreaEndX-1, minY);
+                drawingAreaPath.lineTo(contentAreaStartX+contentAreaWidth-1, minY);
+                drawingAreaPath.lineTo(contentAreaStartX+contentAreaWidth-1, maxY-1);
+                drawingAreaPath.lineTo(touchAreaEndX-1, maxY-1);
+                drawingAreaPath.lineTo(touchAreaEndX-1, contentAreaStartY+contentAreaHeight-1);
+                drawingAreaPath.lineTo(touchAreaStartX, contentAreaStartY+contentAreaHeight-1);
+                drawingAreaPath.lineTo(touchAreaStartX, maxY-1);
+                drawingAreaPath.lineTo(contentAreaStartX, maxY-1);
+                drawingAreaPath.lineTo(contentAreaStartX, minY);
+                drawingAreaPath.lineTo(touchAreaStartX, minY);
+            }
+            drawingAreaPath.close();
+
+            mPaintStroke.setAntiAlias(false);
+            mPaintStroke.setStrokeWidth(0);
+            mPaintStroke.setColor(mTestToucableAreaColor);
+            canvas.drawPath(drawingAreaPath, mPaintStroke);
+            mPaintStroke.setAntiAlias(true);
+        }
 
         //--- Draw non-selected bar ---
         mPaintStroke.setColor(colorNotSelectedBar);
